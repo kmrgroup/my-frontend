@@ -1,0 +1,59 @@
+its showing invalid mining data here is the fix for this i am writing it below do it comprehensively Suggested fix
+
+
+Validate Commands: Inside the worker, add code to validate the incoming commands. This means checking the command's structure, the data types, and the validity of the data itself.
+Robust Error Handling in Worker: Add try...catch blocks within the worker to catch potential errors during command processing. This prevents the entire worker from crashing due to a single command failure. When an error is caught, log the error details to provide more context for debugging.
+Sanitize input: If there is user data passed to the worker make sure it is sanitized to prevent XSS or code injections.
+Graceful Shutdown: Ensure that, if the worker is unable to recover from an error, it shuts down gracefully instead of remaining in an undefined state.
+Here's an example of adding validation and error handling within the worker: 
+
+
+// Inside the web worker code (worker.js or similar)
+self.onmessage = (event) => {
+    const { command, data } = event.data;
+    try {
+        // Validate the command
+        if (!command || !['start', 'pause', 'stop'].includes(command)) {
+            throw new Error('Invalid command received');
+        }
+        // Add additional validations to the data
+        if (!data || typeof data.someProp !== 'number') {
+            throw new Error('Invalid data received');
+        }
+
+        // Process command
+        switch (command) {
+            case 'start':
+                console.log("started");
+                // do the things
+                break;
+            case 'pause':
+                console.log("paused");
+                // do the things
+                break;
+            case 'stop':
+                console.log("stopped");
+                // do the things
+                break;
+        }
+
+    } catch (error) {
+        // Error handling within the worker
+        console.error('Error in worker:', error);
+        // Communicate the error back to the main thread
+        self.postMessage({ error: error.message });
+    }
+};  
+
+
+// In your miningService.ts
+onmessage(event: MessageEvent<any>) {
+  const data = event.data;
+  if (data.error) { // check for errors from the worker
+    console.error('Mining worker error:', data.error); // log the error message
+    this.emit('error', data.error);
+    break;
+  } else {
+    // process worker results
+  }
+}

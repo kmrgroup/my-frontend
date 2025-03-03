@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+/* Toast positioning at the top */
+[role="status"] {
+  --toast-height: 44px; /* Reduced from 64px */
+  position: fixed !important;
+  top: 1.5rem !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  bottom: auto !important;
+  transition: transform 0.2s ease-out !important;
+  z-index: 50;
+  max-width: 320px !important; /* Added max-width constraint */
+}
+
+/* Toast stacking */
+.toast-0 {
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast-1 {
+  transform: translateX(-50%) translateY(calc(var(--toast-height, 64px) + 8px));
+}
+
+.toast-2 {
+  transform: translateX(-50%) translateY(calc((var(--toast-height, 64px) * 2) + 16px));
+}
+
+/* Optimized Animations */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 10s ease infinite;
+  will-change: background-position;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-text-gradient {
+  background-size: 200% auto;
+  animation: gradient-shift 4s linear infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out forwards;
+}
+
+/* Tooltip Animations */
+.tooltip-enter {
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+.tooltip-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.tooltip-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.tooltip-exit-active {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.15s ease-in, transform 0.15s ease-in;
+}
+
+/* Custom animations for tooltips */
+@keyframes tooltip-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.animate-tooltip-pulse {
+  animation: tooltip-pulse 2s ease-in-out infinite;
+}
+
+/* Neuron game animations */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.neuron-pulse::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: rgb(var(--primary));
+  animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes sparkle {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.8; }
+}
+
+.animate-sparkle {
+  animation: sparkle 2s ease-in-out infinite;
+  will-change: transform, opacity;
+}
